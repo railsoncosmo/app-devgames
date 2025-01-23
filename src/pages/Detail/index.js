@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function App() {
+export default function Detail() {
  return (
    <View style={styles.container}>
-     <Text>Tela Principal</Text>
+     <Text>Tela Detail</Text>
    </View>
   );
 }
