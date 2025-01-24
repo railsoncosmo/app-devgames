@@ -1,10 +1,40 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 
-export default function Search() {
+import api from '../../services/api';
+import ListTrendingGames from '../../components/ListTrendingGames';
+
+export default function Search({ route }) {
+  const { searchGame } = route.params;
+
+  const [resultGame, setResultGame] = useState([]);
+
+  useEffect(() => {
+    async function loadData() {
+      const response = await api.get(`/games`, {
+        params: {
+          page_size: 10,
+          search: searchGame
+        }
+      })
+      setResultGame(response.data.results);
+    }
+
+    loadData();
+    console.log(resultGame);
+
+  }, [searchGame]);
+
  return (
    <View style={styles.container}>
-     <Text>Tela Search</Text>
+     <View>
+       <FlatList
+         data={resultGame}
+         keyExtractor={(item) => String(item.id)}
+         renderItem={({ item }) => <ListTrendingGames dataGames={item} />}
+         showsVerticalScrollIndicator={false}
+       />
+     </View>
    </View>
   );
 }
@@ -12,7 +42,6 @@ export default function Search() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: '#050B18',
     }
 });

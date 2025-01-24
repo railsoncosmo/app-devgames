@@ -9,14 +9,19 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import api from '../../services/api';
+import Search from '../Search';
+import {useNavigation} from '@react-navigation/native';
 
 import ListTrendingGames from '../../components/ListTrendingGames';
 import ListCategory from '../../components/ListCategory';
 import Feather from 'react-native-vector-icons/Feather';
 
 export default function Home() {
+  const navigation = useNavigation();
+
   const [categorys, setCategorys] = useState([]);
   const [games, setGames] = useState([]);
+  const [searchGame, setSearchGame] = useState('');
 
   useEffect(() => {
     let isActive = true;
@@ -32,8 +37,11 @@ export default function Home() {
           }),
         ]);
         if (isActive) {
+          const gamesData = [...games.data.results].sort((a, b) => { //Recebendo os dados da API e ordenando por rating
+            return b.rating - a.rating;
+          })
+          setGames(gamesData); //Atualizando os já com os games ordenados.
           setCategorys(categorys.data.results);
-          setGames(games.data.results);
         }
       } catch (error) {
         console.log('Não foi possivel carregar os dados', error);
@@ -46,6 +54,11 @@ export default function Home() {
       isActive = false;
     };
   }, []);
+
+  function handleSearch() {
+    navigation.navigate('Search', {searchGame});
+    setSearchGame('')
+  }
 
   return (
     <View style={styles.container}>
@@ -65,8 +78,10 @@ export default function Home() {
           style={styles.inputSearch}
           placeholder="Looking for a game?"
           placeholderTextColor="#FFF"
+          onChangeText={(text) => setSearchGame(text)}
         />
-        <TouchableOpacity>
+        <TouchableOpacity
+         onPress={handleSearch}>
           <Feather name="search" size={30} color="#FF455F" />
         </TouchableOpacity>
       </View>
@@ -135,6 +150,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 20,
     paddingLeft: 15,
+    color: '#FFF',
   },
   textTrending: {
     marginTop: 15,

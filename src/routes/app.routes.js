@@ -11,11 +11,29 @@ const Stack = createNativeStackNavigator();
 
 export default function AppRoutes() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            initialRouteName="Home"
+            screenOptions={{ 
+                headerTitleStyle: {
+                    color: '#fff',
+                    fontSize: 24,
+                },
+             }}
+        >
             <Stack.Screen
                 name="Home"
                 component={Home}
                 options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="Search"
+                component={Search}
+                options={{ 
+                    headerTintColor: '#fff',
+                    headerStyle: {
+                        backgroundColor: '#050B18'
+                    }
+                 }}
             />
         </Stack.Navigator>
     )
