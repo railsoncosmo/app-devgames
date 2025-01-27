@@ -1,9 +1,20 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 
-export default function ListCategory({data}) {
+import {useNavigation} from '@react-navigation/native';
+
+export default function ListCategory({ data }) {
+  const navigation = useNavigation();
+
+  function handleCategorys() {
+    navigation.navigate('Categorys', {data});
+  }
+
   return (
-    <TouchableOpacity style={styles.buttonCategory}>
+    <TouchableOpacity 
+      style={styles.buttonCategory}
+      onPress={handleCategorys}
+    >
       <Text style={styles.textCategory}>{data?.name}</Text>
     </TouchableOpacity>
   );
@@ -12,17 +23,17 @@ export default function ListCategory({data}) {
 const styles = StyleSheet.create({
   buttonCategory: {
     backgroundColor: '#64748B',
-    height: 35,
+    height: 30,
     borderRadius: 8,
     margin: 8,
     marginTop: 25,
-    padding: 5,
-    paddingVertical: 0,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   textCategory: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });

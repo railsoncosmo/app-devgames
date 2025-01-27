@@ -1,10 +1,39 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 
-export default function Categorys() {
+import api from '../../services/api';
+import ListTrendingGames from '../../components/ListTrendingGames';
+
+export default function Categorys({ route }) {
+  const { data } = route.params;
+
+  const [genres, setGenres] = useState([]);
+
+  useEffect(() => {
+    async function loadData() {
+      const response = await api.get(`/games`, {
+        params: {
+          page_size: 10,
+          genres: data?.id
+        }
+      })
+      setGenres(response.data.results);
+    }
+
+    loadData();
+
+  }, [data?.id]);
+
  return (
    <View style={styles.container}>
-     <Text>Tela Categorys</Text>
+     <View>
+      <FlatList
+        data={genres}
+        keyExtractor={item => String(item.id)}
+        renderItem={({ item }) => <ListTrendingGames dataGames={item} />}
+        
+      />
+     </View>
    </View>
   );
 }
@@ -12,7 +41,6 @@ export default function Categorys() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: '#050B18',
     }
 });

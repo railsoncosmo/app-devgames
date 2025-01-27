@@ -18,6 +18,10 @@ export default function AppRoutes() {
                     color: '#fff',
                     fontSize: 24,
                 },
+                headerTintColor: '#fff',
+                    headerStyle: {
+                        backgroundColor: '#050B18'
+                    }
              }}
         >
             <Stack.Screen
@@ -28,6 +32,28 @@ export default function AppRoutes() {
             <Stack.Screen
                 name="Search"
                 component={Search}
+                options={{ 
+                    headerTintColor: '#fff',
+                    headerStyle: {
+                        backgroundColor: '#050B18'
+                    }
+                 }}
+            />
+            <Stack.Screen
+                name="Categorys"
+                component={Categorys}
+                options={({ route }) => ({ title: route.params.data.name })}
+            />
+            <Stack.Screen
+                name="Detail"
+                component={Detail}
+                options={{ 
+                    headerShown: false,
+                 }}
+            />
+            <Stack.Screen
+                name="Favorites"
+                component={Favorites}
                 options={{ 
                     headerTintColor: '#fff',
                     headerStyle: {

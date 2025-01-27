@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import api from '../../services/api';
-import Search from '../Search';
 import {useNavigation} from '@react-navigation/native';
 
 import ListTrendingGames from '../../components/ListTrendingGames';
@@ -22,6 +21,7 @@ export default function Home() {
   const [categorys, setCategorys] = useState([]);
   const [games, setGames] = useState([]);
   const [searchGame, setSearchGame] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isActive = true;
@@ -42,6 +42,7 @@ export default function Home() {
           })
           setGames(gamesData); //Atualizando os já com os games ordenados.
           setCategorys(categorys.data.results);
+          setLoading(false);
         }
       } catch (error) {
         console.log('Não foi possivel carregar os dados', error);
@@ -56,9 +57,22 @@ export default function Home() {
   }, []);
 
   function handleSearch() {
-    navigation.navigate('Search', {searchGame});
+    navigation.navigate("Search", {searchGame});
     setSearchGame('')
   }
+
+  function handleFavorites() {
+    navigation.navigate("Favorites");
+  }
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#050B18' }}>
+        <ActivityIndicator size="large" color="#FF455F" />
+      </View>
+    );
+  }
+
 
   return (
     <View style={styles.container}>
@@ -68,8 +82,11 @@ export default function Home() {
           <Text style={styles.logoTextSecundary}>Games</Text>
         </Text>
 
-        <TouchableOpacity style={styles.buttonFavorite}>
-          <Feather name="bookmark" size={30} color="#FFF" />
+        <TouchableOpacity 
+          style={styles.buttonFavorite}
+          onPress={handleFavorites}
+        >
+          <Feather name="bookmark" size={30} color="#fff" />
         </TouchableOpacity>
       </View>
 
