@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Platforms({ data }) {
+export default function Stores({ data }) {
  return (
-    <View style={styles.buttonPlataform}>
-      <Text style={styles.textPlataform}>{data?.name}</Text>
+    <View style={styles.buttonStore}>
+      <Text style={styles.textStore}>{data?.name}</Text>
     </View>
      );
    }
    
    const styles = StyleSheet.create({
-     buttonPlataform: {
+     buttonStore: {
        backgroundColor: '#64748B',
        height: 30,
        borderRadius: 8,
@@ -20,7 +20,7 @@ export default function Platforms({ data }) {
        justifyContent: 'center',
        alignItems: 'center',
      },
-     textPlataform: {
+     textStore: {
        color: '#fff',
        fontSize: 16,
        fontWeight: 'bold',

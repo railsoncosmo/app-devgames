@@ -7,13 +7,16 @@ import {
   FlatList, 
   ScrollView,
   Modal,
+  Linking,
 } from 'react-native';
 
 import ListCategory from '../../components/ListCategory';
 import FlatImage from '../../components/FlatImage';
 import ModalDetails from '../../components/ModalDetails';
 import Platforms from '../../components/Platforms';
+import Stores from '../../components/Stores';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/api';
 import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -30,7 +33,6 @@ export default function Detail({ route }) {
       try {
         const response = await api.get(`/games/${dataGames?.id}`);
         setDetailsGames(response.data);
-        console.log(dataGames?.name);
       }
       catch (error) {
         console.log('Não foi possivel carregar os dados do jogo', error);
@@ -40,6 +42,21 @@ export default function Detail({ route }) {
     loadData()
 
   }, [dataGames?.name]);
+
+  function handleWebSite() {
+    Linking.openURL(detailsGames?.website);
+  }
+  
+  async function handleFavoriteGame(id, name) {
+    try {
+      const gameFavorite = await AsyncStorage.setItem(`@game`, JSON.stringify(id, name));
+      if (gameFavorite) {
+        alert('Jogo adicionado aos favoritos');
+      }
+    } catch (error) {
+      console.log('Nao foi possivel adicionar o jogo aos favoritos', error);
+    }
+  }
 
   const navigation = useNavigation();
   return (
@@ -52,8 +69,16 @@ export default function Detail({ route }) {
             <Feather name="arrow-left" size={24} color="#fff" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.buttonFavorite}>
+          <TouchableOpacity 
+            onPress={() => handleFavoriteGame(dataGames?.id, dataGames?.name)}
+            style={styles.buttonFavorite}>
             <Feather name="bookmark" size={30} color="#FFF" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleWebSite} 
+            style={[styles.buttonFavorite, {position: 'absolute', right: 15, top: 378, backgroundColor: '#FF455F'}]}>
+            <Feather name="link" size={30} color="#FFF" />
           </TouchableOpacity>
         </View>
 
@@ -74,7 +99,7 @@ export default function Detail({ route }) {
             {dataGames?.rating}/10
           </Text>
         </View>
-        <Text style={{color: '#fff', marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
+        <Text style={{color: '#fff', marginTop: 2, fontSize: 18, fontWeight: 'bold'}}>
           {dataGames?.name}
         </Text>
         <View>
@@ -91,7 +116,7 @@ export default function Detail({ route }) {
           />
         </View>
 
-        <View style={styles.contentDescription}>
+        <View>
           <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>Description</Text>
           <Text 
             style={{color: '#fff', marginTop: 10}}
@@ -115,13 +140,25 @@ export default function Detail({ route }) {
           />
         </Modal>
 
-        <View style={styles.contentDescription}>
-          <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>Platforms</Text>
+        <View>
+          <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginLeft: 10}}>Platforms</Text>
           <FlatList
+            style={{marginTop: -20}}
             data={detailsGames?.metacritic_platforms}
-            keyExtractor={item => String(item.platform)}
+            keyExtractor={item => String(item.platform.slug)}
             horizontal={true}
             renderItem={({item}) => <Platforms data={item.platform} />}
+          />
+        </View>
+
+        <View style={{marginTop: 10}}>
+          <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginLeft: 10}}>Stores</Text>
+          <FlatList
+            style={{marginTop: -20}}
+            data={detailsGames?.stores}
+            keyExtractor={item => String(item.store.id)}
+            horizontal={true}
+            renderItem={({item}) => <Stores data={item.store} />}
           />
         </View>
 

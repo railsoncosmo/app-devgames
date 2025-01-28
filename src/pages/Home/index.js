@@ -68,7 +68,7 @@ export default function Home() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#050B18' }}>
-        <ActivityIndicator size="large" color="#FF455F" />
+        <ActivityIndicator size="70" color="#FF455F" />
       </View>
     );
   }

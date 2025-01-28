@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -9,7 +9,7 @@ export default function ModalDetails({ infoGame, setVisible }) {
     }
 
  return (
-   <View style={styles.container}>
+   <ScrollView style={styles.container}>
      <View style={styles.headerModal}>
         <TouchableOpacity 
          style={styles.buttonBack}
@@ -20,7 +20,7 @@ export default function ModalDetails({ infoGame, setVisible }) {
        <Text style={styles.headerTitle}>Description</Text>
      </View>
      <Text style={styles.descriptionText}>{infoGame.description}</Text>
-   </View>
+   </ScrollView>
   );
 }
 
@@ -58,5 +58,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         textAlign: 'justify',
         lineHeight: 25,
+        marginBottom: 20,
       },
 });

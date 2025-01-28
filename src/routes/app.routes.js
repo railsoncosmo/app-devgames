@@ -16,7 +16,7 @@ export default function AppRoutes() {
             screenOptions={{ 
                 headerTitleStyle: {
                     color: '#fff',
-                    fontSize: 24,
+                    fontSize: 30,
                 },
                 headerTintColor: '#fff',
                     headerStyle: {
@@ -56,6 +56,7 @@ export default function AppRoutes() {
                 component={Favorites}
                 options={{ 
                     headerTintColor: '#fff',
+                    title: 'My Favorites',
                     headerStyle: {
                         backgroundColor: '#050B18'
                     }
