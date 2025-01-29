@@ -26,6 +26,7 @@ export default function Detail({ route }) {
   const {dataGames} = route.params;
   const [detailsGames, setDetailsGames] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isGameFavorite, setIsGameFavorite] = useState(false);
 
   useEffect(() => {
 
@@ -47,14 +48,17 @@ export default function Detail({ route }) {
     Linking.openURL(detailsGames?.website);
   }
   
-  async function handleFavoriteGame(id, name) {
+  async function handleFavoriteGame(id) {
     try {
-      const gameFavorite = await AsyncStorage.setItem(`@game`, JSON.stringify(id, name));
-      if (gameFavorite) {
-        alert('Jogo adicionado aos favoritos');
+      let gameFavorited = { id: id };
+
+      await AsyncStorage.setItem('@games', JSON.stringify(gameFavorited));
+      if (gameFavorited) {
+
+        setIsGameFavorite(true);
       }
     } catch (error) {
-      console.log('Nao foi possivel adicionar o jogo aos favoritos', error);
+      console.log('Não foi possivel adicionar o jogo aos favoritos', error);
     }
   }
 
@@ -70,8 +74,8 @@ export default function Detail({ route }) {
           </TouchableOpacity>
 
           <TouchableOpacity 
-            onPress={() => handleFavoriteGame(dataGames?.id, dataGames?.name)}
-            style={styles.buttonFavorite}>
+            onPress={() => handleFavoriteGame(dataGames?.id)}
+            style={[styles.buttonFavorite, {backgroundColor: isGameFavorite ? '#FFD700' : '#0F172A'}]}>
             <Feather name="bookmark" size={30} color="#FFF" />
           </TouchableOpacity>
 
@@ -190,7 +194,6 @@ const styles = StyleSheet.create({
     left: 15,
   },
   buttonFavorite: {
-    backgroundColor: '#0F172A',
     justifyContent: 'center',
     alignItems: 'center',
     width: 50,

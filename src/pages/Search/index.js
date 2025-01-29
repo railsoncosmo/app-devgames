@@ -20,8 +20,10 @@ export default function Search({ route }) {
       })
       if (response.data.results.length === 0) {
         setListEmpty(true);
+      }else{
+        setListEmpty(false);
+        setResultGame(response.data.results);
       }
-      setResultGame(response.data.results);
     }
 
     loadData();
