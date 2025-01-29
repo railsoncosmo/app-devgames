@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { StatusBar } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native'; 
+
+import Routes from './src/routes';
 
 export default function App() {
  return (
-   <View>
-     <Text>Tela Principal</Text>
-   </View>
+
+  <NavigationContainer>
+    <StatusBar barStyle="light-content" backgroundColor="#050B18"/>
+    <Routes/>
+  </NavigationContainer>
+
   );
 }
