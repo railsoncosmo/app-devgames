@@ -26,23 +26,24 @@ export default function Detail({ route }) {
   const {dataGames} = route.params;
   const [detailsGames, setDetailsGames] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [isGameFavorite, setIsGameFavorite] = useState(false);
+  const [gamesList, setGamesList] = useState([]);
 
   useEffect(() => {
 
-    async function loadData() {
-      try {
-        const response = await api.get(`/games/${dataGames?.id}`);
-        setDetailsGames(response.data);
-      }
-      catch (error) {
-        console.log('Não foi possivel carregar os dados do jogo', error);
-      }
-    }
-
+    getFavorites()
     loadData()
 
   }, [dataGames?.name]);
+
+  async function loadData() {
+    try {
+      const response = await api.get(`/games/${dataGames?.id}`);
+      setDetailsGames(response.data);
+    }
+    catch (error) {
+      console.log('Não foi possivel carregar os dados do jogo', error);
+    }
+  }
 
   function handleWebSite() {
     Linking.openURL(detailsGames?.website);
@@ -50,16 +51,36 @@ export default function Detail({ route }) {
   
   async function handleFavoriteGame(id) {
     try {
-      let gameFavorited = { id: id };
+      const gamesFavorited = await AsyncStorage.getItem('@game');
+      const games = JSON.parse(gamesFavorited);
 
-      await AsyncStorage.setItem('@games', JSON.stringify(gameFavorited));
-      if (gameFavorited) {
+      if(games && games.length > 0) {
+        if(games.includes(id)) {
+          const deleteFavorite = games.filter(game => game !== id);
 
-        setIsGameFavorite(true);
+          await AsyncStorage.setItem('@game', JSON.stringify(deleteFavorite));
+          setGamesList(deleteFavorite);
+          return;
+        }
+        games.push(id);
+
+        await AsyncStorage.setItem('@game', JSON.stringify(games));
+      } else {
+        await AsyncStorage.setItem('@game', JSON.stringify([id]));
       }
+      const newGames = await AsyncStorage.getItem('@game');
+      setGamesList(JSON.parse(newGames));
     } catch (error) {
       console.log('Não foi possivel adicionar o jogo aos favoritos', error);
     }
+  }
+
+  async function getFavorites(){
+    const gamesFavorited = await AsyncStorage.getItem('@game');
+      const games = JSON.parse(gamesFavorited);
+
+      setGamesList(games ?? []);
+
   }
 
   const navigation = useNavigation();
@@ -75,7 +96,7 @@ export default function Detail({ route }) {
 
           <TouchableOpacity 
             onPress={() => handleFavoriteGame(dataGames?.id)}
-            style={[styles.buttonFavorite, {backgroundColor: isGameFavorite ? '#FFD700' : '#0F172A'}]}>
+            style={[styles.buttonFavorite, {backgroundColor: gamesList.includes(dataGames?.id) ? '#FFD700' : '#0F172A'}]}>
             <Feather name="bookmark" size={30} color="#FFF" />
           </TouchableOpacity>
 
@@ -194,6 +215,7 @@ const styles = StyleSheet.create({
     left: 15,
   },
   buttonFavorite: {
+    backgroundColor: '#0F172A',
     justifyContent: 'center',
     alignItems: 'center',
     width: 50,

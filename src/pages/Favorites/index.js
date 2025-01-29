@@ -11,27 +11,21 @@ export default function Favorites() {
   useEffect(() => {
     async function loadGamesFavorites() {
 
-      const gamesFavorited = await AsyncStorage.getItem('@games');
-      console.log(gamesFavorited);
+      const gamesFavorited = await AsyncStorage.getItem('@game');
 
       if(gamesFavorited){
         const gamesFavorites = JSON.parse(gamesFavorited);
         
-        const responde = await api.get(`/games/${gamesFavorites.id}`);
-        setFavorites([responde.data]);
+        const games = await Promise.all(
+          gamesFavorites.map(async id => {
+          const response = await api.get(`/games/${id}`);
+          return response.data;  
+      }));
+        setFavorites(games);
       }
     }
     loadGamesFavorites()
   }, []);
-
-
-  if (favorites.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Text style={{color: '#fff', fontSize: 20, textAlign: 'center', marginTop: 40}}>Nenhum jogo favorito encontrado.</Text>
-      </View>
-    );
-  }
 
  return (
    <View style={styles.container}>
